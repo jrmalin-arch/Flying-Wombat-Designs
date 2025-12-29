@@ -1,0 +1,33 @@
+---
+interface Props {
+  title: string;
+}
+const { title } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Henny+Penny&family=Quicksand:wght@500;700&family=Space+Mono&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --accent: #FF5722;
+    --black: #1A1A1A;
+    --white: #ffffff;
+  }
+  html {
+    font-family: 'Quicksand', sans-serif;
+    background: var(--white);
+    color: var(--black);
+  }
+  body { margin: 0; }
+</style>
