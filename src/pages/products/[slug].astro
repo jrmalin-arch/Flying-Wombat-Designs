@@ -3,7 +3,8 @@ import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 
 export async function getStaticPaths() {
-  const productEntries = await getCollection('FWDProducts');
+  // FIXED: Changed 'FWDProducts' to 'fwdproducts' (lowercase)
+  const productEntries = await getCollection('fwdproducts');
   return productEntries.map(entry => ({
     params: { slug: entry.slug }, props: { entry },
   }));
@@ -47,8 +48,8 @@ const { Content } = await entry.render();
             Every item is handmade. Contact us to check availability or to request a custom color.
           </p>
           <a href={`/contact?product=${entry.data.title}`} class="email-button">
-  Send Inquiry
-</a>
+            Send Inquiry
+          </a>
         </div>
       </div>
     </div>
@@ -76,4 +77,31 @@ const { Content } = await entry.render();
   .main-image { width: 100%; height: auto; display: block; }
 
   .category-tag { font-family: 'Space Mono', monospace; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem; font-weight: bold; }
-  .product-headline { font-family
+  .product-headline { font-family: 'Henny Penny', cursive; font-size: clamp(2.5rem, 5vw, 4rem); margin: 1rem 0; }
+  .price-text { font-family: 'Quicksand', sans-serif; font-size: 2rem; font-weight: 700; margin-bottom: 2rem; }
+  .product-description { font-family: 'Quicksand', sans-serif; line-height: 1.7; font-size: 1.15rem; color: #333; }
+
+  .divider { margin: 3rem 0; border: 0; border-top: 1px solid #eee; }
+
+  .inquiry-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    padding: 2.5rem;
+    border: 1px solid rgba(26, 26, 26, 0.1);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  }
+  .inquiry-title { font-family: 'Space Mono', monospace; font-size: 1.2rem; margin-top: 0; }
+  .email-button {
+    display: inline-block;
+    background: #1A1A1A;
+    color: white;
+    padding: 12px 30px;
+    text-decoration: none;
+    font-family: 'Space Mono', monospace;
+    font-weight: bold;
+    border: 2px solid #1A1A1A;
+  }
+  .email-button:hover { background: white; color: #1A1A1A; }
+
+  @media (max-width: 1000px) { .product-grid { grid-template-columns: 1fr; gap: 3rem; } }
+</style>

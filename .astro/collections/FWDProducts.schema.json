@@ -1,7 +1,7 @@
 {
-  "$ref": "#/definitions/FWDProducts",
+  "$ref": "#/definitions/fwdproducts",
   "definitions": {
-    "FWDProducts": {
+    "fwdproducts": {
       "type": "object",
       "properties": {
         "title": {
@@ -23,8 +23,7 @@
       "required": [
         "title",
         "image",
-        "price",
-        "category"
+        "price"
       ],
       "additionalProperties": false
     }

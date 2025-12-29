@@ -2,18 +2,21 @@
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 
-const allProducts = await getCollection('FWDProducts');
+// FIXED: Using all-lowercase collection name to match your folder/config update
+const allProducts = await getCollection('fwdproducts');
 ---
 
 <Layout title="Flying Wombat Designs">
   <nav class="main-nav">
     <div class="brand-group">
-      <img src="/fwd-logo-simple.png" alt="Logo" class="nav-logo" />
-      <span class="nav-title">flying wombat designs</span>
+      <a href="/" class="brand-link">
+        <img src="/fwd-logo-simple.png" alt="Logo" class="nav-logo" />
+        <span class="nav-title">flying wombat designs</span>
+      </a>
     </div>
 
     <div class="nav-controls">
-      <a href="/FW-Boys-3D-Prints" class="orange-button desktop-only">
+      <a href="/fw-boys-3d-prints" class="orange-button desktop-only">
         FW Boys 3D Prints Shop
       </a>
 
@@ -25,7 +28,7 @@ const allProducts = await getCollection('FWDProducts');
     </div>
 
     <div id="mobile-menu" class="dropdown-overlay">
-      <a href="/FW-Boys-3D-Prints">FW Boys 3D Prints Shop</a>
+      <a href="/fw-boys-3d-prints">FW Boys 3D Prints Shop</a>
       <a href="/">Wife's Knits Gallery</a>
     </div>
   </nav>
@@ -75,6 +78,7 @@ const allProducts = await getCollection('FWDProducts');
     z-index: 1001;
   }
   .brand-group { display: flex; align-items: center; gap: 20px; }
+  .brand-link { display: flex; align-items: center; gap: 20px; text-decoration: none; color: inherit; }
   .nav-logo { height: 100px; width: auto; }
   .nav-title { font-family: 'Henny Penny', cursive; font-size: 3rem; white-space: nowrap; }
 
@@ -88,7 +92,9 @@ const allProducts = await getCollection('FWDProducts');
     font-family: 'Space Mono', monospace;
     font-weight: bold;
     white-space: nowrap;
+    transition: transform 0.1s;
   }
+  .orange-button:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px #1A1A1A; }
 
   .hamburger-toggle {
     display: none;
@@ -117,26 +123,31 @@ const allProducts = await getCollection('FWDProducts');
   .dropdown-overlay.open { display: flex; }
   .dropdown-overlay a { padding: 20px; text-decoration: none; color: #1A1A1A; font-family: 'Space Mono', monospace; border-bottom: 1px solid #eee; font-weight: bold; }
 
-  /* --- HERO SECTION (TONED DOWN) --- */
+  /* --- HERO SECTION (SHRUNK) --- */
   .hero-container {
     width: 100%;
-    height: 500px;
+    height: 350px; /* Reduced from 500px */
     position: relative;
     overflow: hidden;
     border-bottom: 4px solid #1A1A1A;
   }
-  .hero-image { width: 100%; height: 100%; object-fit: cover; }
+  .hero-image { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+    object-position: center;
+  }
 
   .hero-label-soft {
     position: absolute;
-    bottom: 40px;
+    bottom: 25px;
     left: 5%;
-    background: rgba(255, 255, 255, 0.85); /* Frosted Glass background */
+    background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    padding: 15px 30px;
-    border: 1px solid rgba(26, 26, 26, 0.15); /* Thinner, lighter border */
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); /* Soft shadow instead of hard offset */
+    padding: 12px 25px;
+    border: 1px solid rgba(26, 26, 26, 0.15);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
   }
 
   .label-text-elegant {
@@ -175,17 +186,15 @@ const allProducts = await getCollection('FWDProducts');
   .product-title { font-family: 'Henny Penny', cursive; margin: 0.5rem 0; font-size: 1.8rem; }
   .product-price { font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 1.4rem; }
 
-  /* --- RESPONSIVE --- */
   @media (max-width: 1100px) {
     .desktop-only { display: none; }
     .hamburger-toggle { display: flex; }
     .nav-title { font-size: 2rem; }
-    .hero-container { height: 350px; }
+    .hero-container { height: 250px; } /* Slimmer for mobile devices */
   }
 </style>
 
 <script>
-  // Script to handle the Hamburger Menu toggle
   function initMenu() {
     const toggle = document.getElementById('menu-toggle');
     const menu = document.getElementById('mobile-menu');
@@ -195,14 +204,10 @@ const allProducts = await getCollection('FWDProducts');
         e.stopPropagation();
         menu.classList.toggle('open');
       };
-      
       document.onclick = () => menu.classList.remove('open');
     }
   }
 
-  // Runs on initial load
   initMenu();
-
-  // Runs after Astro page navigation
   document.addEventListener('astro:after-swap', initMenu);
 </script>

@@ -3,7 +3,8 @@ import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 
 export async function getStaticPaths() {
-  const productEntries = await getCollection('FWBoysProducts');
+  // FIXED: Must match the lowercase collection name 'fwboysproducts'
+  const productEntries = await getCollection('fwboysproducts');
   return productEntries.map(entry => ({
     params: { slug: entry.slug }, props: { entry },
   }));
@@ -15,7 +16,7 @@ const { Content } = await entry.render();
 
 <Layout title={`${entry.data.title} | fw boys prints`}>
   <nav class="boys-detail-nav">
-    <a href="/FW-Boys-3D-Prints" class="back-link">← back to shop</a>
+    <a href="/fw-boys-3d-prints" class="back-link">← back to shop</a>
     <span class="boys-brand">fw boys prints</span>
   </nav>
 
@@ -42,9 +43,7 @@ const { Content } = await entry.render();
           </ul>
         </div>
 
-        <a href={`/contact?product=${entry.data.title}`} class="email-button">
-  Send Inquiry
-</a>
+        <a href={`/contact?product=${entry.data.title}`} class="order-button">Request This Print</a>
       </div>
     </div>
   </main>
@@ -52,7 +51,23 @@ const { Content } = await entry.render();
 
 <style>
   :root { --cyan: #00f2ff; }
-  :global(body) { background: #000 !important; color: #fff !important; }
+
+  /* FIX: Eliminates the white bar at the bottom */
+  :global(html) {
+    background-color: #000;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+
+  :global(body) { 
+    background-color: #000 !important; 
+    color: #fff !important; 
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
 
   .boys-detail-nav {
     display: flex;
@@ -60,27 +75,81 @@ const { Content } = await entry.render();
     padding: 1.5rem 5%;
     background: #000;
     border-bottom: 2px solid var(--cyan);
+    align-items: center;
   }
-  .boys-brand { font-family: 'Space Mono', monospace; color: var(--cyan); text-transform: uppercase; letter-spacing: 2px; font-weight: bold; }
-  .back-link { font-family: 'Space Mono', monospace; text-decoration: none; color: #666; font-size: 0.8rem; }
+  .boys-brand { 
+    font-family: 'Space Mono', monospace; 
+    color: var(--cyan); 
+    text-transform: uppercase; 
+    letter-spacing: 2px; 
+    font-weight: bold; 
+  }
+  .back-link { 
+    font-family: 'Space Mono', monospace; 
+    text-decoration: none; 
+    color: #666; 
+    font-size: 0.8rem; 
+  }
 
-  .tech-container { max-width: 1200px; margin: 4rem auto; padding: 0 5%; }
+  .tech-container { 
+    max-width: 1200px; 
+    margin: 4rem auto; 
+    padding: 0 5%; 
+    flex-grow: 1; /* Pushes content down if needed */
+  }
   .tech-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; }
 
-  .image-stage { border: 2px solid var(--cyan); box-shadow: 0 0 20px rgba(0, 242, 255, 0.15); background: #0a0a0a; }
+  .image-stage { 
+    border: 2px solid var(--cyan); 
+    box-shadow: 0 0 20px rgba(0, 242, 255, 0.15); 
+    background: #0a0a0a; 
+  }
   .main-image { width: 100%; height: auto; display: block; }
 
-  .tech-title { font-family: 'Space Mono', monospace; font-size: clamp(2rem, 5vw, 3.5rem); color: var(--cyan); margin: 0; text-transform: uppercase; }
-  .tech-price { font-family: 'Space Mono', monospace; font-size: 1.8rem; color: #888; margin: 1rem 0; }
-  .tech-description { font-family: 'Quicksand', sans-serif; line-height: 1.6; color: #ccc; margin-bottom: 2.5rem; }
+  .tech-title { 
+    font-family: 'Space Mono', monospace; 
+    font-size: clamp(2rem, 5vw, 3.5rem); 
+    color: var(--cyan); 
+    margin: 0; 
+    text-transform: uppercase; 
+  }
+  .tech-price { 
+    font-family: 'Space Mono', monospace; 
+    font-size: 1.8rem; 
+    color: #888; 
+    margin: 1rem 0; 
+  }
+  .tech-description { 
+    font-family: 'Quicksand', sans-serif; 
+    line-height: 1.6; 
+    color: #ccc; 
+    margin-bottom: 2.5rem; 
+  }
 
-  .specs-box { border: 1px solid #222; padding: 1.5rem; background: #050505; }
-  .specs-box h3 { font-family: 'Space Mono', monospace; color: var(--cyan); margin-top: 0; font-size: 0.9rem; text-transform: uppercase; }
-  .specs-box ul { font-family: 'Space Mono', monospace; font-size: 0.85rem; color: #888; list-style: none; padding: 0; }
+  .specs-box { 
+    border: 1px solid #222; 
+    padding: 1.5rem; 
+    background: #050505; 
+    margin-bottom: 2rem;
+  }
+  .specs-box h3 { 
+    font-family: 'Space Mono', monospace; 
+    color: var(--cyan); 
+    margin-top: 0; 
+    font-size: 0.9rem; 
+    text-transform: uppercase; 
+  }
+  .specs-box ul { 
+    font-family: 'Space Mono', monospace; 
+    font-size: 0.85rem; 
+    color: #888; 
+    list-style: none; 
+    padding: 0; 
+  }
+  .specs-box li { margin-bottom: 0.5rem; }
 
   .order-button {
     display: inline-block;
-    margin-top: 2.5rem;
     background: var(--cyan);
     color: #000;
     padding: 1.2rem 2.5rem;
@@ -88,8 +157,17 @@ const { Content } = await entry.render();
     font-family: 'Space Mono', monospace;
     font-weight: bold;
     text-transform: uppercase;
+    transition: 0.3s ease;
+    border: none;
+    cursor: pointer;
   }
-  .order-button:hover { background: #fff; transform: translateY(-3px); }
+  .order-button:hover { 
+    background: #fff; 
+    transform: translateY(-3px); 
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+  }
 
-  @media (max-width: 900px) { .tech-grid { grid-template-columns: 1fr; gap: 2.5rem; } }
+  @media (max-width: 900px) { 
+    .tech-grid { grid-template-columns: 1fr; gap: 2.5rem; } 
+  }
 </style>

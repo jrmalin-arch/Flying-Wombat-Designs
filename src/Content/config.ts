@@ -1,6 +1,6 @@
 import { defineCollection, z } from 'astro:content';
 
-const fwdProducts = defineCollection({
+const fwdproducts = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
@@ -10,7 +10,7 @@ const fwdProducts = defineCollection({
   }),
 });
 
-const fwBoysProducts = defineCollection({
+const fwboysproducts = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
@@ -20,6 +20,7 @@ const fwBoysProducts = defineCollection({
 });
 
 export const collections = {
-  'FWDProducts': fwdProducts,
-  'FWBoysProducts': fwBoysProducts, // Ensure this matches the folder name exactly
+  // These keys MUST match your folder names exactly (all lowercase)
+  'fwdproducts': fwdproducts,
+  'fwboysproducts': fwboysproducts,
 };
