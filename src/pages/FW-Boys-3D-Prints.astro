@@ -1,0 +1,124 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+
+// Pull only the products from the boys' specific folder
+const boysProducts = await getCollection('FWBoysProducts');
+---
+
+<Layout title="FW Boys 3D Prints | flying wombat designs">
+  <nav class="boys-nav">
+    <div class="nav-left">
+      <a href="/" class="back-link">← back to wombat designs</a>
+    </div>
+    <span class="boys-brand">fw boys prints</span>
+  </nav>
+
+  <header class="tech-hero">
+    <div class="hero-inner">
+      <h1>precision <span class="cyan-glow">3D</span> prints</h1>
+      <p>Custom manufacturing. High-grade polymers. Wombat engineering.</p>
+    </div>
+  </header>
+
+  <main class="tech-gallery">
+    <div class="tech-grid">
+      {boysProducts.map(item => (
+        <a href={`/boys-products/${item.slug}`} class="tech-card">
+          <div class="image-wrap">
+            <img src={item.data.image} alt={item.data.title} />
+          </div>
+          <div class="tech-info">
+            <h2 class="tech-title">{item.data.title}</h2>
+            <p class="tech-price">{item.data.price || 'Custom Quote'}</p>
+            <div class="tech-status">
+              <span class="status-dot"></span> Available for Print
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+  </main>
+</Layout>
+
+<style>
+  /* Tech Theme Palette */
+  :root {
+    --boys-bg: #000000;
+    --tech-card: #0a0a0a;
+    --cyan: #00f2ff;
+    --border: #1a1a1a;
+  }
+
+  /* Navigation */
+  .boys-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 5%;
+    background: var(--boys-bg);
+    border-bottom: 2px solid var(--cyan);
+    color: white;
+  }
+  .back-link { 
+    color: #666; 
+    text-decoration: none; 
+    font-family: 'Space Mono', monospace; 
+    font-size: 0.8rem; 
+    text-transform: lowercase;
+  }
+  .boys-brand { 
+    font-family: 'Space Mono', monospace; 
+    font-weight: bold; 
+    text-transform: uppercase; 
+    letter-spacing: 4px; 
+    color: var(--cyan); 
+  }
+
+  /* Hero Section */
+  .tech-hero {
+    background: var(--boys-bg);
+    padding: 6rem 5%;
+    color: white;
+    text-align: center;
+  }
+  .tech-hero h1 { 
+    font-family: 'Space Mono', monospace; 
+    font-size: clamp(2rem, 8vw, 4rem); 
+    text-transform: uppercase; 
+    margin: 0; 
+  }
+  .cyan-glow { 
+    color: var(--cyan); 
+    text-shadow: 0 0 15px rgba(0, 242, 255, 0.6); 
+  }
+
+  /* Gallery Grid */
+  .tech-gallery { background: var(--boys-bg); padding: 4rem 5%; min-height: 100vh; }
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+  }
+
+  /* Tech Cards */
+  .tech-card {
+    background: var(--tech-card);
+    border: 1px solid var(--border);
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+  .tech-card:hover { 
+    border-color: var(--cyan); 
+    transform: translateY(-5px); 
+    box-shadow: 0 10px 30px rgba(0, 242, 255, 0.1);
+  }
+
+  .image-wrap { width: 100%; height: 280px; overflow: hidden; border-bottom: 1px solid var(--border); }
+  .image-wrap img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
+  
+  .tech-info { padding: 1.5rem; color: white; font-family: 'Space Mono', monospace; }
+  .tech-title { font-size: 1.1rem; margin: 0; color: var(--cyan); text-transform: uppercase; }
+  .tech-price { color: #888; margin: 0.5rem 0 1rem 0; font-size: 1.2rem; }
+
+  .tech-status { font-size: 0.7rem; color: #666; display: flex; align-items: center; gap: 8px; }

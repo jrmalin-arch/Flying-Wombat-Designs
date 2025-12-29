@@ -1,0 +1,33 @@
+{
+  "$ref": "#/definitions/FWDProducts",
+  "definitions": {
+    "FWDProducts": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "image": {
+          "type": "string"
+        },
+        "price": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        },
+        "$schema": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "image",
+        "price",
+        "category"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

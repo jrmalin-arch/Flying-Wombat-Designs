@@ -1,0 +1,208 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+
+const allProducts = await getCollection('FWDProducts');
+---
+
+<Layout title="Flying Wombat Designs">
+  <nav class="main-nav">
+    <div class="brand-group">
+      <img src="/fwd-logo-simple.png" alt="Logo" class="nav-logo" />
+      <span class="nav-title">flying wombat designs</span>
+    </div>
+
+    <div class="nav-controls">
+      <a href="/FW-Boys-3D-Prints" class="orange-button desktop-only">
+        FW Boys 3D Prints Shop
+      </a>
+
+      <button id="menu-toggle" class="hamburger-toggle" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <div id="mobile-menu" class="dropdown-overlay">
+      <a href="/FW-Boys-3D-Prints">FW Boys 3D Prints Shop</a>
+      <a href="/">Wife's Knits Gallery</a>
+    </div>
+  </nav>
+
+  <section class="hero-container">
+    <img src="/knit-banner.png" alt="Flying Wombat Designs Banner" class="hero-image" />
+    <div class="hero-label-soft">
+      <p class="label-text-elegant">Est. 2025 — Small Batch Handmade</p>
+    </div>
+  </section>
+
+  <main class="gallery-container">
+    <h1 class="main-headline">
+      Handmade <span style="color: var(--accent);">Knits</span> & Jewelry
+    </h1>
+
+    <div class="gallery-grid">
+      {allProducts.map(item => (
+        <a href={`/products/${item.slug}`} class="product-card">
+          <div class="card-inner">
+            <div class="product-image-box">
+               <img src={item.data.image} alt={item.data.title} />
+            </div>
+            <div class="card-content">
+              <span class="category-tag">{item.data.category}</span>
+              <h2 class="product-title">{item.data.title}</h2>
+              <p class="product-price">{item.data.price}</p>
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+  </main>
+</Layout>
+
+<style>
+  /* --- NAVIGATION --- */
+  .main-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 5%;
+    border-bottom: 4px solid #1A1A1A;
+    background: white;
+    position: relative;
+    min-height: 120px;
+    z-index: 1001;
+  }
+  .brand-group { display: flex; align-items: center; gap: 20px; }
+  .nav-logo { height: 100px; width: auto; }
+  .nav-title { font-family: 'Henny Penny', cursive; font-size: 3rem; white-space: nowrap; }
+
+  .orange-button {
+    background: var(--accent);
+    color: white;
+    padding: 12px 24px;
+    text-decoration: none;
+    border: 3px solid #1A1A1A;
+    box-shadow: 4px 4px 0px #1A1A1A;
+    font-family: 'Space Mono', monospace;
+    font-weight: bold;
+    white-space: nowrap;
+  }
+
+  .hamburger-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 35px;
+    height: 25px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+  }
+  .hamburger-toggle span { width: 100%; height: 4px; background: #1A1A1A; border-radius: 10px; }
+
+  .dropdown-overlay {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 300px;
+    background: white;
+    border: 4px solid #1A1A1A;
+    box-shadow: 10px 10px 0px #1A1A1A;
+    flex-direction: column;
+    z-index: 1000;
+  }
+  .dropdown-overlay.open { display: flex; }
+  .dropdown-overlay a { padding: 20px; text-decoration: none; color: #1A1A1A; font-family: 'Space Mono', monospace; border-bottom: 1px solid #eee; font-weight: bold; }
+
+  /* --- HERO SECTION (TONED DOWN) --- */
+  .hero-container {
+    width: 100%;
+    height: 500px;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 4px solid #1A1A1A;
+  }
+  .hero-image { width: 100%; height: 100%; object-fit: cover; }
+
+  .hero-label-soft {
+    position: absolute;
+    bottom: 40px;
+    left: 5%;
+    background: rgba(255, 255, 255, 0.85); /* Frosted Glass background */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 15px 30px;
+    border: 1px solid rgba(26, 26, 26, 0.15); /* Thinner, lighter border */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); /* Soft shadow instead of hard offset */
+  }
+
+  .label-text-elegant {
+    font-family: 'Space Mono', monospace;
+    font-weight: 500;
+    margin: 0;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    color: #1A1A1A;
+  }
+
+  /* --- GALLERY --- */
+  .gallery-container { padding: 4rem 5%; }
+  .main-headline { font-family: 'Henny Penny', cursive; font-size: clamp(2.5rem, 6vw, 4.5rem); margin-bottom: 2rem; }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 40px;
+  }
+  .product-card { text-decoration: none; color: inherit; }
+  .card-inner { border: 4px solid #1A1A1A; background: white; transition: 0.2s ease; }
+  .product-card:hover .card-inner { transform: translate(-8px, -8px); box-shadow: 12px 12px 0px #1A1A1A; }
+
+  .product-image-box {
+    width: 100%;
+    height: 350px; 
+    overflow: hidden;
+    border-bottom: 4px solid #1A1A1A;
+  }
+  .product-image-box img { width: 100%; height: 100%; object-fit: cover; }
+
+  .card-content { padding: 1.5rem; }
+  .category-tag { font-family: 'Space Mono', monospace; color: var(--accent); font-weight: bold; font-size: 0.8rem; }
+  .product-title { font-family: 'Henny Penny', cursive; margin: 0.5rem 0; font-size: 1.8rem; }
+  .product-price { font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 1.4rem; }
+
+  /* --- RESPONSIVE --- */
+  @media (max-width: 1100px) {
+    .desktop-only { display: none; }
+    .hamburger-toggle { display: flex; }
+    .nav-title { font-size: 2rem; }
+    .hero-container { height: 350px; }
+  }
+</style>
+
+<script>
+  // Script to handle the Hamburger Menu toggle
+  function initMenu() {
+    const toggle = document.getElementById('menu-toggle');
+    const menu = document.getElementById('mobile-menu');
+
+    if (toggle && menu) {
+      toggle.onclick = (e) => {
+        e.stopPropagation();
+        menu.classList.toggle('open');
+      };
+      
+      document.onclick = () => menu.classList.remove('open');
+    }
+  }
+
+  // Runs on initial load
+  initMenu();
+
+  // Runs after Astro page navigation
+  document.addEventListener('astro:after-swap', initMenu);
+</script>

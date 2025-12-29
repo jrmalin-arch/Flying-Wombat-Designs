@@ -1,0 +1,30 @@
+backend:
+  name: git-gateway
+  branch: main # or master
+
+media_folder: "public/images" # Where images will be uploaded
+public_folder: "/images"
+
+collections:
+  - name: "fwd_products"
+    label: "Wife's Knits & Jewelry"
+    folder: "src/Content/FWDProducts"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Price", name: "price", widget: "string" }
+      - { label: "Category", name: "category", widget: "string" }
+      - { label: "Product Image", name: "image", widget: "image" }
+      - { label: "Description", name: "body", widget: "markdown" }
+
+  - name: "fw_boys_products"
+    label: "Boys' 3D Prints"
+    folder: "src/Content/FWBoysProducts"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Price", name: "price", widget: "string" }
+      - { label: "Product Image", name: "image", widget: "image" }
+      - { label: "Description", name: "body", widget: "markdown" }

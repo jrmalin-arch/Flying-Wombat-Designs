@@ -1,0 +1,95 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const productEntries = await getCollection('FWBoysProducts');
+  return productEntries.map(entry => ({
+    params: { slug: entry.slug }, props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<Layout title={`${entry.data.title} | fw boys prints`}>
+  <nav class="boys-detail-nav">
+    <a href="/FW-Boys-3D-Prints" class="back-link">← back to shop</a>
+    <span class="boys-brand">fw boys prints</span>
+  </nav>
+
+  <main class="tech-container">
+    <div class="tech-grid">
+      <div class="image-stage">
+        <img src={entry.data.image} alt={entry.data.title} class="main-image" />
+      </div>
+
+      <div class="info-stage">
+        <h1 class="tech-title">{entry.data.title}</h1>
+        <p class="tech-price">{entry.data.price}</p>
+        
+        <div class="tech-description">
+          <Content />
+        </div>
+
+        <div class="specs-box">
+          <h3>Technical Specs</h3>
+          <ul>
+            <li><strong>Material:</strong> High-Strength PLA+</li>
+            <li><strong>Precision:</strong> 0.2mm Layer Height</li>
+            <li><strong>Status:</strong> Calibrated & Ready</li>
+          </ul>
+        </div>
+
+        <a href={`/contact?product=${entry.data.title}`} class="email-button">
+  Send Inquiry
+</a>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  :root { --cyan: #00f2ff; }
+  :global(body) { background: #000 !important; color: #fff !important; }
+
+  .boys-detail-nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 1.5rem 5%;
+    background: #000;
+    border-bottom: 2px solid var(--cyan);
+  }
+  .boys-brand { font-family: 'Space Mono', monospace; color: var(--cyan); text-transform: uppercase; letter-spacing: 2px; font-weight: bold; }
+  .back-link { font-family: 'Space Mono', monospace; text-decoration: none; color: #666; font-size: 0.8rem; }
+
+  .tech-container { max-width: 1200px; margin: 4rem auto; padding: 0 5%; }
+  .tech-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; }
+
+  .image-stage { border: 2px solid var(--cyan); box-shadow: 0 0 20px rgba(0, 242, 255, 0.15); background: #0a0a0a; }
+  .main-image { width: 100%; height: auto; display: block; }
+
+  .tech-title { font-family: 'Space Mono', monospace; font-size: clamp(2rem, 5vw, 3.5rem); color: var(--cyan); margin: 0; text-transform: uppercase; }
+  .tech-price { font-family: 'Space Mono', monospace; font-size: 1.8rem; color: #888; margin: 1rem 0; }
+  .tech-description { font-family: 'Quicksand', sans-serif; line-height: 1.6; color: #ccc; margin-bottom: 2.5rem; }
+
+  .specs-box { border: 1px solid #222; padding: 1.5rem; background: #050505; }
+  .specs-box h3 { font-family: 'Space Mono', monospace; color: var(--cyan); margin-top: 0; font-size: 0.9rem; text-transform: uppercase; }
+  .specs-box ul { font-family: 'Space Mono', monospace; font-size: 0.85rem; color: #888; list-style: none; padding: 0; }
+
+  .order-button {
+    display: inline-block;
+    margin-top: 2.5rem;
+    background: var(--cyan);
+    color: #000;
+    padding: 1.2rem 2.5rem;
+    text-decoration: none;
+    font-family: 'Space Mono', monospace;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+  .order-button:hover { background: #fff; transform: translateY(-3px); }
+
+  @media (max-width: 900px) { .tech-grid { grid-template-columns: 1fr; gap: 2.5rem; } }
+</style>
