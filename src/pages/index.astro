@@ -1,12 +1,12 @@
 ---
 import { getCollection } from 'astro:content';
-import Layout from '../layouts/Layout.astro';
+import layout from '../layouts/layout.astro';
 
 // FIXED: Using all-lowercase collection name to match your folder/config update
 const allProducts = await getCollection('fwdproducts');
 ---
 
-<Layout title="Flying Wombat Designs">
+<layout title="Flying Wombat Designs">
   <nav class="main-nav">
     <div class="brand-group">
       <a href="/" class="brand-link">
