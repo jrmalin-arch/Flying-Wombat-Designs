@@ -1,12 +1,14 @@
 ---
 import { getCollection } from 'astro:content';
+// CONFIRMED: Correct capitalization and lowercase path
 import Layout from '../../layouts/layout.astro';
 
 export async function getStaticPaths() {
-  // FIXED: Must match the lowercase collection name 'fwboysproducts'
+  // FIXED: Standardizing on the lowercase collection name
   const productEntries = await getCollection('fwboysproducts');
   return productEntries.map(entry => ({
-    params: { slug: entry.slug }, props: { entry },
+    params: { slug: entry.slug }, 
+    props: { entry },
   }));
 }
 
@@ -43,7 +45,9 @@ const { Content } = await entry.render();
           </ul>
         </div>
 
-        <a href={`/contact?product=${entry.data.title}`} class="order-button">Request This Print</a>
+        <a href={`/contact?product=${encodeURIComponent(entry.data.title)}`} class="order-button">
+          Request This Print
+        </a>
       </div>
     </div>
   </main>
@@ -95,7 +99,7 @@ const { Content } = await entry.render();
     max-width: 1200px; 
     margin: 4rem auto; 
     padding: 0 5%; 
-    flex-grow: 1; /* Pushes content down if needed */
+    flex-grow: 1; 
   }
   .tech-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; }
 

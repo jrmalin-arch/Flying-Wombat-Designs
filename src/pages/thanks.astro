@@ -1,8 +1,9 @@
 ---
-import layout from '../layouts/layout.astro';
+// FIXED: Capitalized "Layout" to match usage and ensure it is defined for the build
+import Layout from '../layouts/layout.astro';
 ---
 
-<layout title="Message Sent | flying wombat designs">
+<Layout title="Message Sent | flying wombat designs">
   <nav class="simple-nav">
     <div class="nav-left">
       <a href="/" class="brand-link">
@@ -20,7 +21,7 @@ import layout from '../layouts/layout.astro';
       
       <div class="next-steps">
         <a href="/" class="primary-button">Back to Home</a>
-        <a href="/FW-Boys-3D-Prints" class="secondary-button">Visit 3D Prints Shop</a>
+        <a href="/fw-boys-3d-prints" class="secondary-button">Visit 3D Prints Shop</a>
       </div>
     </div>
   </main>

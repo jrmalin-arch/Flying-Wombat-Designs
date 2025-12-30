@@ -1,12 +1,13 @@
 ---
 import { getCollection } from 'astro:content';
-import layout from '../layouts/layout.astro';
+// FIXED: Capitalized the component name "Layout", but kept the file path lowercase
+import Layout from '../layouts/layout.astro';
 
 // FIXED: Using all-lowercase collection name to match your folder/config update
 const allProducts = await getCollection('fwdproducts');
 ---
 
-<layout title="Flying Wombat Designs">
+<Layout title="Flying Wombat Designs">
   <nav class="main-nav">
     <div class="brand-group">
       <a href="/" class="brand-link">
@@ -62,9 +63,7 @@ const allProducts = await getCollection('fwdproducts');
       ))}
     </div>
   </main>
-</Layout>
-
-<style>
+</Layout> <style>
   /* --- NAVIGATION --- */
   .main-nav {
     display: flex;
@@ -126,7 +125,7 @@ const allProducts = await getCollection('fwdproducts');
   /* --- HERO SECTION (SHRUNK) --- */
   .hero-container {
     width: 100%;
-    height: 350px; /* Reduced from 500px */
+    height: 350px;
     position: relative;
     overflow: hidden;
     border-bottom: 4px solid #1A1A1A;
@@ -190,7 +189,7 @@ const allProducts = await getCollection('fwdproducts');
     .desktop-only { display: none; }
     .hamburger-toggle { display: flex; }
     .nav-title { font-size: 2rem; }
-    .hero-container { height: 250px; } /* Slimmer for mobile devices */
+    .hero-container { height: 250px; }
   }
 </style>
 

@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
-import layout from '../layouts/layout.astro';
+// FIXED: Changed 'layout' to 'Layout' (Capitalized) to match the tags used below
+import Layout from '../layouts/layout.astro';
 
 // Pull only the products from the boys' specific folder
 const boysProducts = await getCollection('fwboysproducts');
