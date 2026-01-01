@@ -1,30 +1,76 @@
+local_backend: true
+
 backend:
   name: git-gateway
-  branch: main # or master
+  branch: main
 
-media_folder: "public/images" # Where images will be uploaded
+media_folder: "public/images" 
 public_folder: "/images"
 
 collections:
-  - name: "fwd_products"
-    label: "Wife's Knits & Jewelry"
-    folder: "src/Content/FWDProducts"
+  - name: "fwdproducts"
+    label: "FWD Products"
+    folder: "src/content/fwdproducts"
     create: true
     slug: "{{slug}}"
     fields:
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Price", name: "price", widget: "string" }
+      - label: "Availability Status"
+        name: "status"
+        widget: "select"
+        options:
+          - { label: "In Stock", value: "in_stock" }
+          - { label: "Custom Order", value: "custom" }
+        default: "in_stock"
       - { label: "Category", name: "category", widget: "string" }
-      - { label: "Product Image", name: "image", widget: "image" }
-      - { label: "Description", name: "body", widget: "markdown" }
+      
+      # NEW: Multi-Image Gallery with Captions (Max 10)
+      - label: "Product Gallery"
+        name: "gallery"
+        widget: "list"
+        summary: "{{fields.image}}"
+        minimize_collapsed: true
+        max: 10
+        fields:
+          - { label: "Image", name: "image", widget: "image" }
+          - { label: "Caption", name: "caption", widget: "string", required: false }
 
-  - name: "fw_boys_products"
-    label: "Boys' 3D Prints"
-    folder: "src/Content/FWBoysProducts"
+      - { label: "Description", name: "body", widget: "markdown" }
+      - { label: "Material", name: "material", widget: "string", required: false, hint: "e.g., Sterling Silver, Bio-Resin" }
+      - { label: "Is this a CC BY License model?", name: "is_cc_by", widget: "boolean", default: false }
+      - { label: "Original Designer Name", name: "designer_name", widget: "string", required: false }
+      - { label: "Source File Link", name: "source_link", widget: "string", required: false }
+
+  - name: "fwboysproducts"
+    label: "FW Boys Products"
+    folder: "src/content/fwboysproducts"
     create: true
     slug: "{{slug}}"
     fields:
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Price", name: "price", widget: "string" }
-      - { label: "Product Image", name: "image", widget: "image" }
+      - label: "Availability Status"
+        name: "status"
+        widget: "select"
+        options:
+          - { label: "In Stock", value: "in_stock" }
+          - { label: "Custom Order", value: "custom" }
+        default: "in_stock"
+
+      # NEW: Multi-Image Gallery with Captions (Max 10)
+      - label: "Product Gallery"
+        name: "gallery"
+        widget: "list"
+        summary: "{{fields.image}}"
+        minimize_collapsed: true
+        max: 10
+        fields:
+          - { label: "Image", name: "image", widget: "image" }
+          - { label: "Caption", name: "caption", widget: "string", required: false }
+
+      - { label: "Material", name: "material", widget: "string", default: "PLA Plastic" }
       - { label: "Description", name: "body", widget: "markdown" }
+      - { label: "Is this a CC BY License model?", name: "is_cc_by", widget: "boolean", default: false }
+      - { label: "Original Designer Name", name: "designer_name", widget: "string", required: false }
+      - { label: "Source File Link", name: "source_link", widget: "string", required: false }

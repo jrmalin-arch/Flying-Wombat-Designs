@@ -28,31 +28,56 @@ import Layout from '../layouts/layout.astro';
 </Layout>
 
 <style>
+  /* PREVENT HORIZONTAL OVERFLOW */
+  :global(html, body) {
+    overflow-x: hidden;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
   .simple-nav {
     display: flex;
     justify-content: center;
-    padding: 2rem;
-    border-bottom: 2px solid #1A1A1A;
+    padding: 1.5rem 5%;
+    border-bottom: 4px solid #1A1A1A; /* Standardized to match index.astro */
+    background: white;
   }
-  .brand-link { display: flex; align-items: center; gap: 15px; text-decoration: none; color: #1A1A1A; }
+  
+  .brand-link { 
+    display: flex; 
+    align-items: center; 
+    gap: 15px; 
+    text-decoration: none; 
+    color: #1A1A1A; 
+  }
+  
   .nav-logo { height: 60px; width: auto; }
-  .nav-title { font-family: 'Henny Penny', cursive; font-size: 2rem; }
+  
+  /* FIXED: Added responsive sizing and wrapping for mobile portrait */
+  .nav-title { 
+    font-family: 'Henny Penny', cursive; 
+    font-size: clamp(1.4rem, 5vw, 2rem); 
+    line-height: 1.1;
+    word-wrap: break-word;
+  }
 
   .thanks-container {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 70vh;
-    padding: 0 5%;
+    padding: 2rem 5%;
   }
 
   .thanks-card {
     max-width: 600px;
+    width: 100%;
     text-align: center;
     background: white;
     border: 4px solid #1A1A1A;
     padding: 4rem 2rem;
-    box-shadow: 20px 20px 0px #1A1A1A;
+    box-shadow: 15px 15px 0px #1A1A1A; /* Standardized shadow size */
   }
 
   .check-icon {
@@ -66,13 +91,13 @@ import Layout from '../layouts/layout.astro';
     margin: 0 auto 2rem;
   }
 
-  h1 { font-family: 'Henny Penny', cursive; font-size: 3rem; margin-bottom: 1rem; }
-  p { font-family: 'Quicksand', sans-serif; font-size: 1.2rem; color: #444; line-height: 1.6; }
+  h1 { font-family: 'Henny Penny', cursive; font-size: clamp(2rem, 8vw, 3rem); margin-bottom: 1rem; }
+  p { font-family: 'Quicksand', sans-serif; font-size: 1.1rem; color: #444; line-height: 1.6; }
 
   .next-steps {
     margin-top: 3rem;
     display: flex;
-    gap: 20px;
+    gap: 15px;
     justify-content: center;
     flex-wrap: wrap;
   }
@@ -85,6 +110,8 @@ import Layout from '../layouts/layout.astro';
     text-transform: uppercase;
     border: 2px solid #1A1A1A;
     transition: 0.2s;
+    font-size: 0.9rem;
+    text-align: center;
   }
 
   .primary-button { background: #1A1A1A; color: white; }
@@ -92,4 +119,10 @@ import Layout from '../layouts/layout.astro';
 
   .secondary-button { background: white; color: #1A1A1A; }
   .secondary-button:hover { background: #eee; }
+
+  @media (max-width: 600px) {
+    .thanks-card { padding: 2rem 1rem; }
+    .next-steps { flex-direction: column; width: 100%; }
+    .primary-button, .secondary-button { width: 100%; box-sizing: border-box; }
+  }
 </style>

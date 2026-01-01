@@ -1,9 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
-// FIXED: Capitalized the component name "Layout", but kept the file path lowercase
 import Layout from '../layouts/layout.astro';
 
-// FIXED: Using all-lowercase collection name to match your folder/config update
 const allProducts = await getCollection('fwdproducts');
 ---
 
@@ -17,8 +15,9 @@ const allProducts = await getCollection('fwdproducts');
     </div>
 
     <div class="nav-controls">
-      <a href="/fw-boys-3d-prints" class="orange-button desktop-only">
-        FW Boys 3D Prints Shop
+      <a href="/fw-boys-3d-prints" class="tech-shop-button desktop-only">
+        <span class="glitch-text">FW BOYS 3D PRINTS</span>
+        <span class="button-status">ENTER_SHOP >></span>
       </a>
 
       <button id="menu-toggle" class="hamburger-toggle" aria-label="Menu">
@@ -51,10 +50,18 @@ const allProducts = await getCollection('fwdproducts');
         <a href={`/products/${item.slug}`} class="product-card">
           <div class="card-inner">
             <div class="product-image-box">
-               <img src={item.data.image} alt={item.data.title} />
+               <img 
+                src={item.data.gallery?.[0]?.image || '/placeholder.png'} 
+                alt={item.data.title} 
+               />
             </div>
             <div class="card-content">
-              <span class="category-tag">{item.data.category}</span>
+              <div class="card-header-row">
+                <span class="category-tag">{item.data.category}</span>
+                <span class={`status-tag ${item.data.status}`}>
+                  {item.data.status === 'in_stock' ? '● In Stock' : '🛠 Custom'}
+                </span>
+              </div>
               <h2 class="product-title">{item.data.title}</h2>
               <p class="product-price">{item.data.price}</p>
             </div>
@@ -63,7 +70,25 @@ const allProducts = await getCollection('fwdproducts');
       ))}
     </div>
   </main>
-</Layout> <style>
+</Layout>
+
+<style>
+  :root { --cyan: #00f2ff; }
+
+  /* PREVENT HORIZONTAL OVERFLOW - Fixes the line issue */
+  :global(html, body) {
+    overflow-x: hidden;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  #netlify-identity-widget, .netlify-identity-menu, iframe {
+    display: none !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
+  }
+
   /* --- NAVIGATION --- */
   .main-nav {
     display: flex;
@@ -73,27 +98,64 @@ const allProducts = await getCollection('fwdproducts');
     border-bottom: 4px solid #1A1A1A;
     background: white;
     position: relative;
-    min-height: 120px;
+    min-height: 80px;
     z-index: 1001;
+    gap: 15px;
   }
-  .brand-group { display: flex; align-items: center; gap: 20px; }
-  .brand-link { display: flex; align-items: center; gap: 20px; text-decoration: none; color: inherit; }
-  .nav-logo { height: 100px; width: auto; }
-  .nav-title { font-family: 'Henny Penny', cursive; font-size: 3rem; white-space: nowrap; }
+  
+  .brand-group { 
+    display: flex; 
+    align-items: center; 
+    flex: 1; 
+    min-width: 0; 
+  }
+  
+  .brand-link { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    text-decoration: none; 
+    color: inherit; 
+  }
+  
+  .nav-logo { height: 60px; width: auto; flex-shrink: 0; }
+  
+  .nav-title { 
+    font-family: 'Henny Penny', cursive; 
+    font-size: clamp(1.4rem, 5vw, 2.8rem); 
+    line-height: 1.1;
+    display: block; 
+    word-wrap: break-word;
+  }
 
-  .orange-button {
-    background: var(--accent);
-    color: white;
-    padding: 12px 24px;
-    text-decoration: none;
-    border: 3px solid #1A1A1A;
-    box-shadow: 4px 4px 0px #1A1A1A;
-    font-family: 'Space Mono', monospace;
-    font-weight: bold;
-    white-space: nowrap;
-    transition: transform 0.1s;
+  .nav-controls { 
+    display: flex; 
+    align-items: center; 
+    flex-shrink: 0; 
+    min-width: 45px; 
   }
-  .orange-button:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px #1A1A1A; }
+
+  .tech-shop-button {
+    background: #000;
+    color: var(--cyan);
+    padding: 10px 20px;
+    text-decoration: none;
+    border: 2px solid var(--cyan);
+    font-family: 'Space Mono', monospace;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.2s ease;
+    box-shadow: 0 0 10px rgba(0, 242, 255, 0.2);
+  }
+  .glitch-text { font-weight: bold; font-size: 0.9rem; letter-spacing: 1px; }
+  .button-status { font-size: 0.6rem; color: #fff; opacity: 0.7; margin-top: 2px; }
+  
+  .tech-shop-button:hover {
+    background: var(--cyan);
+    color: #000;
+    box-shadow: 0 0 20px rgba(0, 242, 255, 0.5);
+  }
 
   .hamburger-toggle {
     display: none;
@@ -104,6 +166,7 @@ const allProducts = await getCollection('fwdproducts');
     background: transparent;
     border: none;
     cursor: pointer;
+    padding: 0;
   }
   .hamburger-toggle span { width: 100%; height: 4px; background: #1A1A1A; border-radius: 10px; }
 
@@ -112,7 +175,8 @@ const allProducts = await getCollection('fwdproducts');
     position: absolute;
     top: 100%;
     right: 0;
-    width: 300px;
+    width: 100%;
+    max-width: 300px;
     background: white;
     border: 4px solid #1A1A1A;
     box-shadow: 10px 10px 0px #1A1A1A;
@@ -122,91 +186,94 @@ const allProducts = await getCollection('fwdproducts');
   .dropdown-overlay.open { display: flex; }
   .dropdown-overlay a { padding: 20px; text-decoration: none; color: #1A1A1A; font-family: 'Space Mono', monospace; border-bottom: 1px solid #eee; font-weight: bold; }
 
-  /* --- HERO SECTION (SHRUNK) --- */
+  /* --- HERO BREAKOUT: Fixed with 100% calculation --- */
   .hero-container {
-    width: 100%;
-    height: 350px;
+    width: 100vw;
     position: relative;
+    left: 50%;
+    transform: translateX(-50%); /* Better than negative margins for line consistency */
+    height: clamp(180px, 40vh, 350px);
     overflow: hidden;
     border-bottom: 4px solid #1A1A1A;
   }
-  .hero-image { 
-    width: 100%; 
-    height: 100%; 
-    object-fit: cover; 
-    object-position: center;
-  }
-
+  .hero-image { width: 100%; height: 100%; object-fit: cover; object-position: center; }
   .hero-label-soft {
     position: absolute;
     bottom: 25px;
     left: 5%;
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
     padding: 12px 25px;
     border: 1px solid rgba(26, 26, 26, 0.15);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
   }
-
-  .label-text-elegant {
-    font-family: 'Space Mono', monospace;
-    font-weight: 500;
-    margin: 0;
-    text-transform: uppercase;
-    font-size: 0.85rem;
-    letter-spacing: 2px;
-    color: #1A1A1A;
-  }
+  .label-text-elegant { font-family: 'Space Mono', monospace; font-weight: 500; margin: 0; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 2px; color: #1A1A1A; }
 
   /* --- GALLERY --- */
   .gallery-container { padding: 4rem 5%; }
-  .main-headline { font-family: 'Henny Penny', cursive; font-size: clamp(2.5rem, 6vw, 4.5rem); margin-bottom: 2rem; }
-
-  .gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 40px;
-  }
+  .main-headline { font-family: 'Henny Penny', cursive; font-size: clamp(2rem, 6vw, 4.5rem); margin-bottom: 2rem; }
+  .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 40px; }
   .product-card { text-decoration: none; color: inherit; }
   .card-inner { border: 4px solid #1A1A1A; background: white; transition: 0.2s ease; }
   .product-card:hover .card-inner { transform: translate(-8px, -8px); box-shadow: 12px 12px 0px #1A1A1A; }
-
-  .product-image-box {
-    width: 100%;
-    height: 350px; 
-    overflow: hidden;
-    border-bottom: 4px solid #1A1A1A;
+  
+  .product-image-box { 
+    width: 100%; 
+    aspect-ratio: 4 / 5; 
+    overflow: hidden; 
+    border-bottom: 4px solid #1A1A1A; 
   }
   .product-image-box img { width: 100%; height: 100%; object-fit: cover; }
-
+  
   .card-content { padding: 1.5rem; }
-  .category-tag { font-family: 'Space Mono', monospace; color: var(--accent); font-weight: bold; font-size: 0.8rem; }
-  .product-title { font-family: 'Henny Penny', cursive; margin: 0.5rem 0; font-size: 1.8rem; }
+  .card-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+  .category-tag { font-family: 'Space Mono', monospace; color: #666; font-weight: bold; font-size: 0.75rem; text-transform: uppercase; }
+  .status-tag { font-family: 'Space Mono', monospace; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; }
+  .status-tag.in_stock { color: #2e7d32; }
+  .status-tag.custom { color: var(--accent); }
+
+  .product-title { 
+    font-family: 'Henny Penny', cursive; 
+    margin: 0.5rem 0; 
+    font-size: 1.8rem;
+    line-height: 1.2;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+    height: 5.5rem; 
+  }
+
   .product-price { font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 1.4rem; }
 
   @media (max-width: 1100px) {
     .desktop-only { display: none; }
     .hamburger-toggle { display: flex; }
-    .nav-title { font-size: 2rem; }
-    .hero-container { height: 250px; }
+    .nav-logo { height: 45px; }
+    .main-nav { min-height: 70px; gap: 10px; }
+    .nav-title { white-space: normal; }
   }
 </style>
 
 <script>
-  function initMenu() {
+  function setupMenu() {
     const toggle = document.getElementById('menu-toggle');
     const menu = document.getElementById('mobile-menu');
-
+    
     if (toggle && menu) {
-      toggle.onclick = (e) => {
+      toggle.addEventListener('click', (e) => {
         e.stopPropagation();
         menu.classList.toggle('open');
-      };
-      document.onclick = () => menu.classList.remove('open');
+      });
+
+      document.addEventListener('click', (e) => {
+        if (menu.classList.contains('open') && !menu.contains(e.target as Node)) {
+          menu.classList.remove('open');
+        }
+      });
     }
   }
 
-  initMenu();
-  document.addEventListener('astro:after-swap', initMenu);
+  setupMenu();
+  document.addEventListener('astro:after-swap', setupMenu);
 </script>

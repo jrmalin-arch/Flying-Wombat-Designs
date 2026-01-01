@@ -1,5 +1,4 @@
 ---
-// FIXED: Capitalized "Layout" to match the tags below
 import Layout from '../layouts/layout.astro';
 ---
 
@@ -29,6 +28,14 @@ import Layout from '../layouts/layout.astro';
             <strong>Response Time</strong>
             <p>Typically within 24-48 hours</p>
           </div>
+          <div class="block">
+            <strong>Social Media</strong>
+            <p>
+              <a href="https://www.instagram.com/flyingwombatdesigns/" target="_blank" class="social-contact-link">
+                @flyingwombatdesigns
+              </a>
+            </p>
+          </div>
         </div>
       </div>
 
@@ -37,8 +44,10 @@ import Layout from '../layouts/layout.astro';
           <input type="hidden" name="access_key" value="f5d25398-3b5f-42ae-8c63-598eac57ee90">
           
           <input type="hidden" id="product-name" name="interested_in_product" value="None Specified" />
-
+          <input type="hidden" name="subject" value="New Inquiry from Flying Wombat Designs">
           <input type="hidden" name="redirect" value="https://flyingwombatdesigns.com/thanks">
+          
+          <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
 
           <div class="field">
             <label for="name">Name</label>
@@ -72,14 +81,7 @@ import Layout from '../layouts/layout.astro';
 </Layout>
 
 <style>
-  .simple-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem 5%;
-    border-bottom: 2px solid #1A1A1A;
-    background: white;
-  }
+  .simple-nav { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 5%; border-bottom: 2px solid #1A1A1A; background: white; }
   .brand-link { display: flex; align-items: center; gap: 15px; text-decoration: none; color: #1A1A1A; }
   .nav-logo { height: 50px; width: auto; }
   .nav-title { font-family: 'Henny Penny', cursive; font-size: 1.8rem; }
@@ -95,52 +97,20 @@ import Layout from '../layouts/layout.astro';
   .info-blocks { margin-top: 3rem; }
   .block { margin-bottom: 2rem; font-family: 'Space Mono', monospace; }
   .block strong { display: block; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 0.5rem; }
+  .social-contact-link { color: #FF5722; text-decoration: none; font-weight: bold; }
 
-  .form-wrapper {
-    background: white;
-    border: 4px solid #1A1A1A;
-    box-shadow: 15px 15px 0px #1A1A1A;
-  }
+  .form-wrapper { background: white; border: 4px solid #1A1A1A; box-shadow: 15px 15px 0px #1A1A1A; }
   .contact-form { padding: 3rem; }
 
   .field { margin-bottom: 1.5rem; }
-  .field label { 
-    display: block; 
-    font-family: 'Space Mono', monospace; 
-    font-weight: bold; 
-    margin-bottom: 0.5rem; 
-    text-transform: uppercase;
-    font-size: 0.8rem;
-  }
+  .field label { display: block; font-family: 'Space Mono', monospace; font-weight: bold; margin-bottom: 0.5rem; text-transform: uppercase; font-size: 0.8rem; }
 
-  input, select, textarea {
-    width: 100%;
-    padding: 1rem;
-    border: 2px solid #1A1A1A;
-    font-family: 'Quicksand', sans-serif;
-    font-size: 1rem;
-    outline: none;
-    box-sizing: border-box;
-  }
+  input, select, textarea { width: 100%; padding: 1rem; border: 2px solid #1A1A1A; font-family: 'Quicksand', sans-serif; font-size: 1rem; outline: none; box-sizing: border-box; }
 
-  .submit-button {
-    width: 100%;
-    background: #1A1A1A;
-    color: white;
-    padding: 1.2rem;
-    border: none;
-    font-family: 'Space Mono', monospace;
-    font-weight: bold;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: 0.2s;
-  }
+  .submit-button { width: 100%; background: #1A1A1A; color: white; padding: 1.2rem; border: none; font-family: 'Space Mono', monospace; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: 0.2s; }
   .submit-button:hover { background: #FF5722; }
 
-  @media (max-width: 850px) {
-    .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
-    .contact-form { padding: 2rem; }
-  }
+  @media (max-width: 850px) { .contact-grid { grid-template-columns: 1fr; gap: 3rem; } .contact-form { padding: 2rem; } }
 </style>
 
 <script>
@@ -156,7 +126,13 @@ import Layout from '../layouts/layout.astro';
       
       const select = document.getElementById('interest') as HTMLSelectElement;
       if (select) {
-        if (product.toLowerCase().includes('dummy') || product.toLowerCase().includes('dragon')) {
+        // Broadened the check for 3D prints to include other common terms
+        const isTechProduct = product.toLowerCase().includes('dummy') || 
+                            product.toLowerCase().includes('dragon') || 
+                            product.toLowerCase().includes('print') ||
+                            product.toLowerCase().includes('3d');
+                            
+        if (isTechProduct) {
            select.value = '3d-prints';
         } else {
            select.value = 'knits';

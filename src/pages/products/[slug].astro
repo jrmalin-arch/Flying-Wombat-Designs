@@ -1,10 +1,8 @@
 ---
 import { getCollection } from 'astro:content';
-// CONFIRMED: Correct capitalization and lowercase path
 import Layout from '../../layouts/layout.astro';
 
 export async function getStaticPaths() {
-  // FIXED: Standardizing on the lowercase collection name
   const productEntries = await getCollection('fwdproducts');
   return productEntries.map(entry => ({
     params: { slug: entry.slug }, props: { entry },
@@ -13,9 +11,12 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await entry.render();
+
+// Extract fields including the new 'gallery' array from CMS
+const { is_cc_by, designer_name, source_link, material, title, status, category, price, gallery } = entry.data;
 ---
 
-<Layout title={`${entry.data.title} | flying wombat designs`}>
+<Layout title={`${title} | flying wombat designs`}>
   <nav class="simple-nav">
     <div class="nav-left">
       <a href="/" class="brand-link">
@@ -28,28 +29,74 @@ const { Content } = await entry.render();
 
   <main class="product-container">
     <div class="product-grid">
-      <div class="image-stage">
-        <img src={entry.data.image} alt={entry.data.title} class="main-image" />
+      
+      <div class="slider-stage">
+        <div class="main-slider" id="productSlider">
+          {gallery && gallery.map((item, index) => (
+            <div class="slide" id={`slide-${index}`}>
+              <img src={item.image} alt={`${title} - view ${index + 1}`} />
+              {item.caption && <div class="slide-caption">{item.caption}</div>}
+            </div>
+          ))}
+        </div>
+
+        {gallery && gallery.length > 1 && (
+          <div class="slider-nav">
+            {gallery.map((item, index) => (
+              <a href={`#slide-${index}`} class="nav-thumb">
+                <img src={item.image} alt="Go to slide" />
+              </a>
+            ))}
+          </div>
+        )}
       </div>
 
       <div class="details-stage">
-        <span class="category-tag">{entry.data.category}</span>
-        <h1 class="product-headline">{entry.data.title}</h1>
-        <p class="price-text">{entry.data.price}</p>
+        <div class="meta-row">
+          <span class="category-tag">{category}</span>
+          <span class={`status-badge ${status}`}>
+            {status === 'in_stock' ? '● In Stock' : '🛠 Custom Order'}
+          </span>
+        </div>
+        
+        <h1 class="product-headline">{title}</h1>
+        <p class="price-text">{price}</p>
         
         <div class="product-description">
           <Content />
         </div>
 
+        {is_cc_by && (
+          <div class="license-box">
+            <h4 class="license-header">License Information</h4>
+            <ul class="license-details">
+              <li><strong>Model Name:</strong> {title}</li>
+              <li><strong>Original Designer:</strong> {designer_name}</li>
+              <li><strong>License:</strong> Creative Commons - Attribution (CC BY 4.0)</li>
+              <li><strong>Designer's Original Work:</strong> <a href={source_link} target="_blank" rel="noopener noreferrer">Source File</a></li>
+            </ul>
+            <div class="license-note">
+              <strong>Note from Flying Wombat Designs:</strong>
+              <p>
+                While we did not design this 3D model, we have been granted permission to sell physical prints under the terms of the license above. 
+                We take great pride in our print quality, using high-grade {material || 'materials'} and rigorous testing to ensure every model we ship meets our high standards.
+              </p>
+            </div>
+          </div>
+        )}
         <hr class="divider" />
 
         <div class="inquiry-card">
-          <h3 class="inquiry-title">Interested in this piece?</h3>
+          <h3 class="inquiry-title">
+            {status === 'in_stock' ? 'Ready to Ship' : 'Request a Custom Piece'}
+          </h3>
           <p class="inquiry-text">
-            Every item is handmade. Contact us to check availability or to request a custom color.
+            {status === 'in_stock' 
+              ? 'This item is currently finished and ready for a new home! Contact us to arrange purchase.' 
+              : 'Every item is handmade. This specific piece is made-to-order; contact us to request a custom color or size.'}
           </p>
-          <a href={`/contact?product=${encodeURIComponent(entry.data.title)}`} class="email-button">
-            Send Inquiry
+          <a href={`/contact?product=${encodeURIComponent(title)}`} class="email-button">
+            {status === 'in_stock' ? 'Inquire About This Item' : 'Request Custom Order'}
           </a>
         </div>
       </div>
@@ -58,51 +105,120 @@ const { Content } = await entry.render();
 </Layout>
 
 <style>
-  .simple-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem 5%;
-    border-bottom: 2px solid #1A1A1A;
-    background: white;
-  }
+  .simple-nav { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 5%; border-bottom: 2px solid #1A1A1A; background: white; }
   .brand-link { display: flex; align-items: center; gap: 15px; text-decoration: none; color: #1A1A1A; }
   .nav-logo { height: 50px; width: auto; }
   .nav-title { font-family: 'Henny Penny', cursive; font-size: 1.8rem; }
   .back-link { font-family: 'Space Mono', monospace; text-decoration: none; color: #666; font-size: 0.9rem; font-weight: bold; }
-
+  
   .product-container { max-width: 1300px; margin: 4rem auto; padding: 0 5%; }
   .product-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 5rem; align-items: start; }
 
-  .image-stage { border: 4px solid #1A1A1A; box-shadow: 15px 15px 0px #1A1A1A; }
-  .main-image { width: 100%; height: auto; display: block; }
+  /* --- SLIDER STYLES --- */
+  .slider-stage { 
+    position: sticky; 
+    top: 2rem; 
+    border: 4px solid #1A1A1A; 
+    box-shadow: 15px 15px 0px #1A1A1A; 
+    background: #fdfdfd;
+    /* NEW: Constrains total height to fit on screen */
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .main-slider {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    /* NEW: Capped height ensures visibility without scrolling */
+    max-height: 75vh; 
+  }
+  .main-slider::-webkit-scrollbar { display: none; }
+  
+  .slide {
+    flex: 0 0 100%;
+    width: 100%;
+    scroll-snap-align: start;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: #f4f4f4; /* Subtle backdrop for contained images */
+  }
+  /* FIXED: object-fit: contain shows the whole image without cropping */
+  .slide img { width: 100%; height: 100%; object-fit: contain; }
 
-  .category-tag { font-family: 'Space Mono', monospace; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem; font-weight: bold; }
-  .product-headline { font-family: 'Henny Penny', cursive; font-size: clamp(2.5rem, 5vw, 4rem); margin: 1rem 0; }
+  .slide-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(26, 26, 26, 0.8);
+    color: white;
+    padding: 1rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    text-align: center;
+  }
+
+  .slider-nav {
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    background: #1A1A1A;
+    overflow-x: auto;
+    /* FIXED: thumbnail bar height */
+    height: 85px; 
+    flex-shrink: 0;
+  }
+  .nav-thumb {
+    width: 60px;
+    height: 60px;
+    flex: 0 0 auto;
+    border: 2px solid transparent;
+    transition: 0.2s;
+  }
+  .nav-thumb:hover { border-color: white; }
+  .nav-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* --- META & TEXT --- */
+  .meta-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+  .category-tag { font-family: 'Space Mono', monospace; color: #FF5722; text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem; font-weight: bold; }
+  .status-badge { font-family: 'Space Mono', monospace; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
+  .status-badge.in_stock { color: #2e7d32; }
+  .status-badge.custom { color: #FF5722; }
+
+  .product-headline { 
+    font-family: 'Henny Penny', cursive; 
+    font-size: clamp(2.5rem, 5vw, 4rem); 
+    margin: 0.5rem 0 1rem 0; 
+    line-height: 1.2;
+  }
   .price-text { font-family: 'Quicksand', sans-serif; font-size: 2rem; font-weight: 700; margin-bottom: 2rem; }
   .product-description { font-family: 'Quicksand', sans-serif; line-height: 1.7; font-size: 1.15rem; color: #333; }
-
   .divider { margin: 3rem 0; border: 0; border-top: 1px solid #eee; }
 
-  .inquiry-card {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(10px);
-    padding: 2.5rem;
-    border: 1px solid rgba(26, 26, 26, 0.1);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-  }
+  .license-box { margin-top: 2rem; padding: 1.5rem; background: #f9f9f9; border-left: 4px solid #1A1A1A; font-family: 'Quicksand', sans-serif; font-size: 0.95rem; }
+  .license-header { font-family: 'Space Mono', monospace; margin-bottom: 1rem; text-transform: uppercase; font-size: 1rem; }
+  .license-details { list-style: none; padding: 0; margin-bottom: 1.5rem; }
+  .license-details li { margin-bottom: 0.5rem; }
+  .license-details a { color: #FF5722; text-decoration: none; font-weight: bold; }
+  .license-note { font-style: italic; color: #555; line-height: 1.5; }
+
+  .inquiry-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); padding: 2.5rem; border: 1px solid rgba(26, 26, 26, 0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
   .inquiry-title { font-family: 'Space Mono', monospace; font-size: 1.2rem; margin-top: 0; }
-  .email-button {
-    display: inline-block;
-    background: #1A1A1A;
-    color: white;
-    padding: 12px 30px;
-    text-decoration: none;
-    font-family: 'Space Mono', monospace;
-    font-weight: bold;
-    border: 2px solid #1A1A1A;
-  }
+  .email-button { display: inline-block; background: #1A1A1A; color: white; padding: 12px 30px; text-decoration: none; font-family: 'Space Mono', monospace; font-weight: bold; border: 2px solid #1A1A1A; }
   .email-button:hover { background: white; color: #1A1A1A; }
 
-  @media (max-width: 1000px) { .product-grid { grid-template-columns: 1fr; gap: 3rem; } }
+  @media (max-width: 1000px) { 
+    .product-grid { grid-template-columns: 1fr; gap: 3rem; } 
+    /* Mobile-specific viewport constraint */
+    .main-slider { max-height: 60vh; }
+    .slider-stage { position: relative; top: 0; max-height: none; }
+  }
 </style>

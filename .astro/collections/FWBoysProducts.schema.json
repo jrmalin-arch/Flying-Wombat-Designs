@@ -7,10 +7,46 @@
         "title": {
           "type": "string"
         },
-        "image": {
+        "price": {
           "type": "string"
         },
-        "price": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "in_stock",
+            "custom"
+          ]
+        },
+        "gallery": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "image": {
+                "type": "string"
+              },
+              "caption": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "image"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 10
+        },
+        "material": {
+          "type": "string"
+        },
+        "is_cc_by": {
+          "type": "boolean",
+          "default": false
+        },
+        "designer_name": {
+          "type": "string"
+        },
+        "source_link": {
           "type": "string"
         },
         "$schema": {
@@ -19,8 +55,9 @@
       },
       "required": [
         "title",
-        "image",
-        "price"
+        "price",
+        "status",
+        "gallery"
       ],
       "additionalProperties": false
     }

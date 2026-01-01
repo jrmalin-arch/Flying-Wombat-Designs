@@ -10,33 +10,49 @@ const { title } = Astro.props;
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
 		<title>{title}</title>
-		
-		<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-
-		<style is:global>
-			/* Hides the default unstyled button that the widget sometimes injects */
-			#netlify-identity-widget, 
-			.netlify-identity-button {
-				display: none !important;
-			}
-		</style>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 	</head>
 	<body>
 		<slot />
 
-		<script>
-			declare global { interface Window { netlifyIdentity: any; } }
-			
-			if (window.netlifyIdentity) {
-				window.netlifyIdentity.on("init", (user: any) => {
-					if (!user) {
-						window.netlifyIdentity.on("login", () => {
-							// Redirects to admin panel only after a successful login
-							document.location.href = "/admin/";
-						});
-					}
-				});
+		<footer class="site-footer">
+			<div class="footer-content">
+				<p>© 2025 Flying Wombat Designs</p>
+				<a href="https://www.instagram.com/flyingwombatdesigns/" target="_blank" rel="noopener noreferrer" class="social-link">
+					<i class="fa-brands fa-instagram"></i> Follow us on Instagram
+				</a>
+			</div>
+		</footer>
+
+		<style is:global>
+			.site-footer {
+				margin-top: 4rem;
+				padding: 2rem 5%;
+				border-top: 1px solid #eee;
+				text-align: center;
+				font-family: 'Space Mono', monospace;
 			}
-		</script>
+			.footer-content {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				gap: 0.5rem;
+			}
+			.social-link {
+				color: #1A1A1A;
+				text-decoration: none;
+				font-size: 0.9rem;
+				transition: color 0.3s ease;
+				display: flex;
+				align-items: center;
+				gap: 8px;
+			}
+			.social-link:hover {
+				color: #FF5722; /* Matches your accent color */
+			}
+			.social-link i {
+				font-size: 1.2rem;
+			}
+		</style>
 	</body>
 </html>
